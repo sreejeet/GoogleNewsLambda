@@ -20,25 +20,15 @@ def lambda_handler(event, context):
     response = requests.get(
         f"https://news.google.com/rss/search?q={search_term}&hl=en-IN&gl=IN&ceid=IN:en")
 
-    # In case the key does not exists in the article, return empty string for the text attribute.
-    # This keeps the parser code clean, although may not be the best solution for this case.
-    class emptytext():
-        text = ''
-
-    # Keys to be parsed from each article
-    keys = [
-        'title'
-        'link'
-        'published_date'
-        'description'
-        'source'
-    ]
-
     # Parse and store articles in memory first
     articles = []
     for item in ET.fromstring(response.text).findall('.//item'):
         articles.append({
-            key: (item.find(key) or emptytext()).text for key in keys
+            'title': item.find('title').text if item.find('title') != None else '',
+            'link': item.find('link').text if item.find('link') != None else '',
+            'published_date': item.find('pubDate').text if item.find('pubDate') != None else '',
+            'description': item.find('description').text if item.find('description') != None else '',
+            'source': item.find('source').text if item.find('source') != None else '',
         })
 
     # Then save each article into the database (AWS RDS)
@@ -47,5 +37,5 @@ def lambda_handler(event, context):
 
     return {
         'statusCode': 200,
-        'body': json.dumps(articles)
+        'body': json.dumps({'articles_retrieved': len(articles)})
     }
