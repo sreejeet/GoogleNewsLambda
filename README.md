@@ -4,3 +4,8 @@ You may find information regarding how to set up the requests library [here](htt
 # GoogleNewsStore
 
 This simple API allows you to search store and retrieve google news articles.
+
+## Some useful resources
+
+1. https://docs.aws.amazon.com/lambda/latest/dg/configuration-database.html
+2. https://aws.amazon.com/blogs/compute/using-amazon-rds-proxy-with-aws-lambda/
