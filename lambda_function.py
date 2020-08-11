@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 def lambda_handler(event, context):
 
     # Make the search term url-safe
-    search_term = quote_plus(event['queryStringParameters']['search'])
+    search_term = event['queryStringParameters']['search']
 
     if not search_term:
         return {
@@ -18,7 +18,7 @@ def lambda_handler(event, context):
     # Make a request to search for google news articles using the
     # query parameter 'search' as the keyword argument
     response = requests.get(
-        f"https://news.google.com/rss/search?q={search_term}&hl=en-IN&gl=IN&ceid=IN:en")
+        f"https://news.google.com/rss/search?q={quote_plus(search_term)}&hl=en-IN&gl=IN&ceid=IN:en")
 
     # Parse and store articles in memory first
     articles = []
@@ -35,7 +35,12 @@ def lambda_handler(event, context):
     for article in articles:
         pass
 
+    respons_json = {
+        'search_term': search_term,
+        'articles_retrieved': len(articles),
+    }
+
     return {
         'statusCode': 200,
-        'body': json.dumps({'articles_retrieved': len(articles)})
+        'body': json.dumps(respons_json)
     }
