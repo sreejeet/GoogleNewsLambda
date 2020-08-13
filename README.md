@@ -4,7 +4,7 @@
 
 This simple Lambda function allows you to search store and retrieve Google news articles.
 
-The aws-cli commands to set up the API Gateway and RDS setup will be added when I get some spare time. If you would like to see a live demonstration of the code, contact me on telegram at [@sreejeet](https://telegram.me/sreejeet)
+The aws-cli commands to set up the API Gateway and RDS setup will be added when I get some spare time. If you would like to see a live demonstration of the code, contact me on Telegram at [@sreejeet](https://telegram.me/sreejeet)
 
 This function uses a very peculiar routing based on the event resource (API Gateway resource) that was used to call this function. This routing was implemented as an experiement and does show some really good potential to reduce the overall number of functions to be deployed and redundant 3rd party modules/libraries.
 
