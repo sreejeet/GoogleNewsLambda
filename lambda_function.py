@@ -32,17 +32,52 @@ logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
 
 
 def lambda_handler(event, context):
-    """
-        Route to the required function based on the resource that was called on the AWS API Gateway
+    """ Route to the required function based on the resource
+    that used to call this lambda endpoint.
     """
 
     if event['resource'][1:] == 'search-and-store':
         return search_and_store(event['queryStringParameters']['search'])
-    else:
-        pass
+    elif event['resource'][1:] == 'search-and-retrieve':
+        return search_and_retrieve(event['queryStringParameters']['search'])
+
+    return {
+        'statusCode': 400,
+        'body': json.dumps("Unknown event")
+    }
+
+
+def search_and_retrieve(search_term):
+    """ Search and return articles with the provided search term
+    from the local database
+    """
+
+    articles = []
+
+    with DB_CON.cursor() as cursor:
+        # Create a new record
+        sql = f"select news_id, title, link, description, source, DATE_FORMAT(published_date, '%d-%m-%Y %H:%i:%s') as published_date from news where title like '%{search_term}%'"
+        cursor.execute(sql)
+        articles = cursor.fetchall()
+
+    logger.info(f"Found {len(articles)} articles")
+
+    respons_json = {
+        'search_term': search_term,
+        'articles_found': len(articles),
+        'articles': articles,
+    }
+
+    return {
+        'statusCode': 200,
+        'body': json.dumps(respons_json)
+    }
 
 
 def search_and_store(search_term):
+    """ Search articles with the provided search term from google
+    and store them in local database.
+    """
 
     # Return empty if no search term was found
     if not search_term:
