@@ -57,7 +57,11 @@ def search_and_retrieve(search_term):
     articles = []
 
     with DB_CON.cursor() as cursor:
-        sql = f"select news_id, title, link, description, source, DATE_FORMAT(published_date, '%d-%m-%Y %H:%i:%s') as published_date from news where title like '%{search_term}%'"
+        sql = f"""
+        select
+            news_id, title, link, description, source, DATE_FORMAT(published_date, '%d-%m-%Y %H:%i:%s') as published_date
+        from news
+            where title like '%{search_term}%'"""
         cursor.execute(sql)
         articles = cursor.fetchall()
 
