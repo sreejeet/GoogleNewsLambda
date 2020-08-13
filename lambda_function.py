@@ -55,7 +55,6 @@ def search_and_retrieve(search_term):
     articles = []
 
     with DB_CON.cursor() as cursor:
-        # Create a new record
         sql = f"select news_id, title, link, description, source, DATE_FORMAT(published_date, '%d-%m-%Y %H:%i:%s') as published_date from news where title like '%{search_term}%'"
         cursor.execute(sql)
         articles = cursor.fetchall()
@@ -109,11 +108,11 @@ def search_and_store(search_term):
             date = parser.parse(date)
             date = date.strftime("%Y-%m-%d %H:%M:%S")
         except:
-            # If date could not be parsed, skip to next news
+            # Very unlikely that date cannot be parsed.
+            # Stop execution if this happens
             logger.error("Date parse err")
             sys.exit()
 
-        # Create a dictionary of article keys and values
         articles.append({
             'title': item.find('title').text if item.find('title') != None else '',
             'link': item.find('link').text if item.find('link') != None else '',
@@ -126,7 +125,6 @@ def search_and_store(search_term):
     articles_retrieved_count = len(articles)
     logger.info(f"Got {articles_retrieved_count} articles")
 
-    # Insert all articles
     with DB_CON.cursor() as cursor:
 
         data = []
@@ -156,7 +154,6 @@ def search_and_store(search_term):
     # Commit to save changes.
     DB_CON.commit()
     del articles
-    logger.info(f"Inserted all articles")
 
     respons_json = {
         'search_term': search_term,
