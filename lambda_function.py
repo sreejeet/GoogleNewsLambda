@@ -99,9 +99,9 @@ def lambda_handler(event, context):
         values_placeholders = ", ".join(values_placeholders)
 
         # Insert all articles in a single DB query
-        sql = """insert into `news`
+        sql = """INSERT IGNORE INTO `news`
                 (`title`,`link`,`published_date`,`description`,`source`, `source_link`)
-                values """ + values_placeholders + ";"
+                VALUES """ + values_placeholders + ";"
 
         cursor.execute(sql, data)
         logger.info("START DB Says")
