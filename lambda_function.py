@@ -8,12 +8,14 @@ import pymysql.cursors
 import os
 import sys
 
+
 DB_HOSTNAME = os.environ['DB_HOSTNAME']
 DB_USERNAME = os.environ['DB_USERNAME']
 DB_PASSWD = os.environ['DB_PASSWD']
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
 
 try:
     DB_CON = pymysql.connect(host=DB_HOSTNAME,
@@ -33,7 +35,7 @@ logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
 
 def lambda_handler(event, context):
     """ Route to the required function based on the resource
-    that used to call this lambda endpoint.
+    that was used to call this lambda endpoint.
     """
 
     if event['resource'][1:] == 'search-and-store':
@@ -78,10 +80,10 @@ def search_and_store(search_term):
     and store them in local database.
     """
 
-    # Return empty if no search term was found
-    if not search_term:
+    # Return empty if search_term is a NoneType
+    if search_term == None:
         respons_json = {
-            'err': "empty search term",
+            'search_term': "",
             'articles_retrieved': 0,
         }
         return {
