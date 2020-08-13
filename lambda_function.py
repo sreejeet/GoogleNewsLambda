@@ -32,8 +32,17 @@ logger.info("SUCCESS: Connection to RDS MySQL instance succeeded")
 
 
 def lambda_handler(event, context):
+    """
+        Route to the required function based on the resource that was called on the AWS API Gateway
+    """
 
-    search_term = event['queryStringParameters']['search']
+    if event['resource'][1:] == 'search-and-store':
+        return search_and_store(event['queryStringParameters']['search'])
+    else:
+        pass
+
+
+def search_and_store(search_term):
 
     # Return empty if no search term was found
     if not search_term:
